@@ -43,7 +43,6 @@ maxWidth: 960, margin: '0 auto', padding: '0 16px',
 display: 'flex', alignItems: 'center', justifyContent: 'space-between'
 }}>
 <span style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>HYUNDAI</span>
-<span style={{ color: '#aacae6', fontSize: 12 }}>동북부 특별조건 검색엔진</span>
 </div>
 </div>
 
