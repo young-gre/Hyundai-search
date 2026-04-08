@@ -28,9 +28,21 @@ const sheet = workbook.Sheets[workbook.SheetNames[0]]
 const json = XLSX.utils.sheet_to_json(sheet)
 
 const uploadedAt = new Date().toISOString()
-const totalCount = json.length
 
-const data = json.map((row, i) => {
+const data = json
+// ✅ 차종이 영어 대문자 2글자가 아니면 제외
+.filter(row => {
+const r = {}
+Object.keys(row).forEach(k => { r[k.trim()] = row[k] })
+
+const car = r['차종']
+
+if (!car) return false
+if (!/^[A-Z]{2}$/.test(String(car).trim())) return false
+
+return true
+})
+.map((row, i) => {
 const r = {}
 Object.keys(row).forEach(k => { r[k.trim()] = row[k] })
 
@@ -59,6 +71,9 @@ expectedPrice:r['예상 차량가격'] ?? '',
 }
 })
 
+const totalCount = data.length
+
+// ✅ Excel + JSON 병렬 저장
 await Promise.all([
 put('hyundai-data.xlsx', buffer, {
 access: 'private',
