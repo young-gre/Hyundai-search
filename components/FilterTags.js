@@ -7,7 +7,7 @@ trim: '트림',
 ext: '외장컬러',
 int: '내장컬러',
 option: '옵션',
-minPrice: '최소금액',
+minPrice: '조건합계 (최소)',
 }
 
 export default function FilterTags({ filters, setFilters }) {

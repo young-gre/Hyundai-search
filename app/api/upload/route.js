@@ -5,48 +5,67 @@ import * as XLSX from 'xlsx'
 export async function POST(request) {
 try {
 const formData = await request.formData()
+
+// ✅ 비밀번호 검증
+const password = formData.get('password')
+if (password !== process.env.ADMIN_PASSWORD) {
+return NextResponse.json(
+{ error: '비밀번호가 올바르지 않습니다' },
+{ status: 401 }
+)
+}
+
 const file = formData.get('file')
-if (!file) return NextResponse.json({ error: '파일이 없습니다' }, { status: 400 })
+if (!file) {
+return NextResponse.json({ error: '파일이 없습니다' }, { status: 400 })
+}
 
 const arrayBuffer = await file.arrayBuffer()
-const workbook = XLSX.read(arrayBuffer, { type: 'buffer' })
+const buffer = Buffer.from(arrayBuffer)
+
+const workbook = XLSX.read(buffer, { type: 'buffer' })
 const sheet = workbook.Sheets[workbook.SheetNames[0]]
 const json = XLSX.utils.sheet_to_json(sheet)
 
-// ✅ 업로드 시점에 JSON 변환
 const uploadedAt = new Date().toISOString()
-const data = json.map((row, i) => ({
-no: row['NO'] ?? i + 1,
-car: row['차종'] ?? '',
-prodNo: row['생산번호'] ?? '',
-specialPrice: row['특별조건 금액'] ?? '',
-saleCode: row['판매코드'] ?? '',
-optionCode: row['옵션코드'] ?? '',
-ext: row['외장'] ?? '',
-int: row['내장'] ?? '',
-prodDate: row['생산일'] ?? '',
-center: row['출고센터'] ?? '',
-totalPrice: row['판매조건 계(특조 금액 제외)'] ?? '',
-status: row['차량상태'] ?? '',
-carName: row['차량명'] ?? '',
-extColor: row['외장컬러'] ?? '',
-intColor: row['내장컬러'] ?? '',
-engine: row['엔진'] ?? '',
-trim: row['트림'] ?? '',
-option: row['옵션'] ?? '',
-}))
+const totalCount = json.length
 
-const totalCount = data.length
+const data = json.map((row, i) => {
+const r = {}
+Object.keys(row).forEach(k => { r[k.trim()] = row[k] })
 
-// ✅ Excel + JSON 병렬 저장
+return {
+no: r['NO'] ?? i + 1,
+car: r['차종'] ?? '',
+prodNo: r['생산번호'] ?? '',
+specialPrice: r['특별조건 금액'] ?? '',
+saleCode: r['판매코드'] ?? '',
+optionCode: r['옵션코드'] ?? '',
+ext: r['외장'] ?? '',
+int: r['내장'] ?? '',
+prodDate: r['생산일'] ?? '',
+center: r['출고센터'] ?? '',
+totalPrice: r['판매조건 계(특조 금액 제외)'] ?? '',
+status: r['차량상태'] ?? '',
+carName: r['차량명'] ?? '',
+extColor: r['외장컬러'] ?? '',
+intColor: r['내장컬러'] ?? '',
+engine: r['엔진'] ?? '',
+trim: r['트림'] ?? '',
+option: r['옵션'] ?? '',
+carPrice: r['차량가격'] ?? '',
+condTotal: r['조건합계'] ?? '',
+expectedPrice:r['예상 차량가격'] ?? '',
+}
+})
+
 await Promise.all([
-// 원본 Excel 보관
-put('hyundai-data.xlsx', file, {
+put('hyundai-data.xlsx', buffer, {
 access: 'private',
 addRandomSuffix: false,
 allowOverwrite: true,
+contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }),
-// JSON 변환본 저장 (API에서 이걸 읽음)
 put('hyundai-data.json',
 JSON.stringify({ data, uploadedAt, totalCount }),
 {
@@ -58,7 +77,7 @@ contentType: 'application/json'
 ),
 ])
 
-return NextResponse.json({ totalCount, uploadedAt })
+return NextResponse.json({ url: 'ok', totalCount })
 
 } catch (err) {
 console.error('업로드 오류:', err.message)

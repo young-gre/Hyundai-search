@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import Header from '@/components/Header'
 import SearchFilter from '@/components/SearchFilter'
 import ResultTable from '@/components/ResultTable'
@@ -16,14 +16,11 @@ const [loading, setLoading] = useState(true)
 const [filters, setFilters] = useState({
 car: '', engine: '', trim: '', ext: '', int: '', option: '', minPrice: ''
 })
-
-// 모달
 const [selectedCar, setSelectedCar] = useState(null)
-
-// 비교
 const [compareList, setCompareList] = useState([])
 
-useEffect(() => {
+// ✅ 데이터 fetch 함수 분리 (재사용 가능하도록)
+const fetchData = useCallback(() => {
 setLoading(true)
 fetch('/api/data')
 .then(r => r.json())
@@ -35,6 +32,10 @@ setTotalCount(json.totalCount || 0)
 .finally(() => setLoading(false))
 }, [])
 
+useEffect(() => {
+fetchData()
+}, [fetchData])
+
 const filtered = useMemo(() => {
 return allData.filter(d => {
 if (filters.car && d.car !== filters.car) return false
@@ -43,11 +44,11 @@ if (filters.trim && d.trim !== filters.trim) return false
 if (filters.ext && d.extColor !== filters.ext) return false
 if (filters.int && d.intColor !== filters.int) return false
 if (filters.option && d.option !== filters.option) return false
-if (filters.minPrice && Number(d.specialPrice) < Number(filters.minPrice)) return false
+if (filters.minPrice && Number(d.condTotal) < Number(filters.minPrice)) return false
 return true
 })
 }, [allData, filters])
-// 비교 토글
+
 const handleCompare = (car) => {
 setCompareList(prev => {
 const exists = prev.some(c => c.no === car.no)
@@ -55,6 +56,12 @@ if (exists) return prev.filter(c => c.no !== car.no)
 if (prev.length >= 3) return prev
 return [...prev, car]
 })
+}
+// ✅ 필터 리셋 시 정렬도 초기화하도록 ref 전달
+const [resetSort, setResetSort] = useState(false)
+const handleResetFilters = (newFilters) => {
+setFilters(newFilters)
+setResetSort(prev => !prev) // 토글로 ResultTable에 신호
 }
 
 return (
@@ -71,33 +78,37 @@ display: 'flex', alignItems: 'center'
 
 {/* 메인 */}
 <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 16px' }}>
+{/* ✅ onUploadSuccess로 자동 리페치 */}
 <Header
 uploadedAt={uploadedAt}
 totalCount={totalCount}
 notice="충북 특별판매조건 대상 리스트"
+onUploadSuccess={fetchData}
 />
 
 {loading ? (
 <LoadingSpinner />
 ) : (
 <>
-<SearchFilter data={allData} filters={filters} setFilters={setFilters} />
-
-{/* 필터 태그 */}
+<SearchFilter
+data={allData}
+filters={filters}
+setFilters={setFilters}
+onReset={handleResetFilters}
+/>
 <FilterTags filters={filters} setFilters={setFilters} />
-
 <p style={{ fontSize: 14, color: '#666', marginBottom: 12 }}>
 검색 결과: <strong style={{ color: '#002c5f' }}>{filtered.length}</strong>건
 <span style={{ color: '#aaa', marginLeft: 8, fontSize: 12 }}>
 (행을 클릭하면 상세정보, 체크박스로 비교)
 </span>
 </p>
-
 <ResultTable
 data={filtered}
 onSelectCar={setSelectedCar}
 compareList={compareList}
 onCompare={handleCompare}
+resetSort={resetSort}
 />
 </>
 )}
@@ -110,7 +121,6 @@ onCompare={handleCompare}
 </p>
 </div>
 
-{/* 차량 상세 모달 */}
 <CarModal
 car={selectedCar}
 onClose={() => setSelectedCar(null)}
@@ -118,7 +128,6 @@ onCompare={handleCompare}
 compareList={compareList}
 />
 
-{/* 비교 바 */}
 <CompareBar
 compareList={compareList}
 onRemove={(no) => setCompareList(prev => prev.filter(c => c.no !== no))}

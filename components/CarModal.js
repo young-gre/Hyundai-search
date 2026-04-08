@@ -2,16 +2,17 @@
 import { useEffect } from 'react'
 
 export default function CarModal({ car, onClose, onCompare, compareList }) {
-if (!car) return null
-
-const isInCompare = compareList.some(c => c.no === car.no)
+    const isInCompare = compareList?.some(c => c.no === car?.no)
 
 // ESC 키로 닫기
 useEffect(() => {
-const handler = (e) => { if (e.key === 'Escape') onClose() }
-window.addEventListener('keydown', handler)
-return () => window.removeEventListener('keydown', handler)
+    if (!car) return
+    const handler = (e) => {if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
 }, [onClose])
+if (!car) return null
+
 
 const rows = [
 { label: 'NO', value: car.no },
@@ -28,8 +29,11 @@ const rows = [
 { label: '내장컬러', value: car.intColor },
 { label: '옵션', value: car.option },
 { label: '차량상태', value: car.status },
-{ label: '특별조건금액', value: car.specialPrice ? Number(car.specialPrice).toLocaleString() + '원' : '-', highlight: 'red' },
-{ label: '판매조건계', value: car.totalPrice ? Number(car.totalPrice).toLocaleString() + '원' : '-', highlight: 'blue' },
+{ label: '특별조건금액', value: car.specialPrice ? Number(car.specialPrice).toLocaleString() + '원' : '-'},
+{ label: '판매조건계', value: car.totalPrice ? Number(car.totalPrice).toLocaleString() + '원' : '-'},
+{ label: '예상 차량가격', value: car.expectedPrice ? Number(car.expectedPrice).toLocaleString() + '원' : '-', highlight: 'red' },
+{ label: '차량가격', value: car.carPrice ? Number(car.carPrice).toLocaleString() + '원' : '-', highlight: 'blue' },
+{ label: '조건합계', value: car.condTotal ? Number(car.condTotal).toLocaleString() + '원' : '-', highlight: 'blue' },
 ]
 
 return (
@@ -97,21 +101,32 @@ justifyContent: 'center'
 {/* 가격 요약 */}
 <div style={{
 display: 'grid',
-gridTemplateColumns: '1fr 1fr',
+gridTemplateColumns: '1fr 1fr 1fr',
 gap: 1,
 background: '#e8e4e0',
 borderBottom: '1px solid #e8e4e0'
 }}>
-<div style={{ background: '#fff7f6', padding: '16px 24px', textAlign: 'center' }}>
-<p style={{ fontSize: 11, color: '#888', margin: '0 0 4px 0' }}>특별조건금액</p>
-<p style={{ fontSize: 20, fontWeight: 700, color: '#e63312', margin: 0 }}>
-{car.specialPrice ? Number(car.specialPrice).toLocaleString() + '원' : '-'}
+{/* 1번째: 차량가격 */}
+<div style={{ background: '#f0fff4', padding: '16px 12px', textAlign: 'center' }}>
+<p style={{ fontSize: 11, color: '#888', margin: '0 0 4px 0' }}>차량가격</p>
+<p style={{ fontSize: 16, fontWeight: 700, color: '#002c5f', margin: 0 }}>
+{car.carPrice ? Number(car.carPrice).toLocaleString() + '원' : '-'}
 </p>
 </div>
-<div style={{ background: '#f0f7ff', padding: '16px 24px', textAlign: 'center' }}>
-<p style={{ fontSize: 11, color: '#888', margin: '0 0 4px 0' }}>판매조건계</p>
-<p style={{ fontSize: 20, fontWeight: 700, color: '#002c5f', margin: 0 }}>
-{car.totalPrice ? Number(car.totalPrice).toLocaleString() + '원' : '-'}
+
+{/* 2번째: 조건합계 */}
+<div style={{ background: '#fff7f6', padding: '16px 12px', textAlign: 'center' }}>
+<p style={{ fontSize: 11, color: '#888', margin: '0 0 4px 0' }}>조건합계</p>
+<p style={{ fontSize: 16, fontWeight: 700, color: '#e63312', margin: 0 }}>
+{car.condTotal ? Number(car.condTotal).toLocaleString() + '원' : '-'}
+</p>
+</div>
+
+{/* 3번째: 예상 차량가격 */}
+<div style={{ background: '#f0f7ff', padding: '16px 12px', textAlign: 'center' }}>
+<p style={{ fontSize: 11, color: '#888', margin: '0 0 4px 0' }}>예상 차량가격</p>
+<p style={{ fontSize: 16, fontWeight: 700, color: '#00aad2', margin: 0 }}>
+{car.expectedPrice ? Number(car.expectedPrice).toLocaleString() + '원' : '-'}
 </p>
 </div>
 </div>
