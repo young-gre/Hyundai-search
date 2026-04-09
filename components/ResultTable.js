@@ -77,6 +77,7 @@ return <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '↑' : '↓'}</span
 
 const columns = [
 { key: 'carName', label: '차량명' },
+{ key: 'prodNo', label: '생산번호' },
 { key: 'status', label: '차량상태' },
 { key: 'condTotal', label: '조건합계' },
 { key: 'expectedPrice', label: '예상 차량가격' },
