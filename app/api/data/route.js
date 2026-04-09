@@ -3,8 +3,18 @@ import { list } from '@vercel/blob'
 
 export const revalidate = 60
 
-export async function GET() {
+// ✅ request 파라미터 추가
+export async function GET(request) {
 try {
+// 🔒 보안 패치: 헤더에 올바른 비밀번호가 있는지 확인
+const authHeader = request.headers.get('authorization')
+if (authHeader !== `Bearer ${process.env.VIEWER_PASSWORD}`) {
+return NextResponse.json(
+{ error: '인증되지 않은 접근입니다.' },
+{ status: 401 }
+)
+}
+
 const { blobs } = await list()
 const jsonBlob = blobs.find(b => b.pathname === 'hyundai-data.json')
 
@@ -15,7 +25,6 @@ return NextResponse.json(
 )
 }
 
-// ✅ JSON만 fetch (XLSX 파싱 없음!)
 const res = await fetch(jsonBlob.url, {
 cache: 'no-store',
 headers: { 'Authorization': `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` }
