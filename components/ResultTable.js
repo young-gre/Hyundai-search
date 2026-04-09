@@ -76,14 +76,12 @@ return <span style={{ marginLeft: 4 }}>{sortDir === 'asc' ? '↑' : '↓'}</span
 }
 
 const columns = [
-{ key: 'car', label: '차종' },
 { key: 'carName', label: '차량명' },
-{ key: 'trim', label: '트림' },
-{ key: 'engine', label: '엔진' },
 { key: 'status', label: '차량상태' },
-{ key: 'carPrice', label: '차량가격' },
 { key: 'condTotal', label: '조건합계' },
 { key: 'expectedPrice', label: '예상 차량가격' },
+{ key: 'engine', label: '엔진' },
+{ key: 'trim', label: '트림' },
 { key: 'extColor', label: '외장컬러' },
 { key: 'intColor', label: '내장컬러' },
 { key: 'option', label: '옵션' },
