@@ -86,8 +86,6 @@ const columns = [
 { key: 'extColor', label: '외장컬러' },
 { key: 'intColor', label: '내장컬러' },
 { key: 'option', label: '옵션' },
-{ key: 'saleCode', label: '판매코드' },
-{ key: 'optionCode', label: '옵션코드' },
 ]
 
 const renderCell = (d, key) => {
