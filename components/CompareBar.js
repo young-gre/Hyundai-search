@@ -32,7 +32,7 @@ animation: 'slideUpBar 0.3s ease'
 {/* 비교 테이블 (펼쳤을 때) */}
 {open && (
 <div style={{
-maxWidth: 960,
+maxWidth: 1200,
 margin: '0 auto',
 padding: '20px 16px',
 overflowX: 'auto'
@@ -119,7 +119,7 @@ background: !allSame && highlight
 )}
 {/* 하단 바 */}
 <div style={{
-maxWidth: 960, margin: '0 auto',
+maxWidth: 1200, margin: '0 auto',
 padding: '12px 16px',
 display: 'flex', alignItems: 'center', gap: 12
 }}>

@@ -69,7 +69,7 @@ return (
 {/* 네비게이션 */}
 <div style={{ background: '#002c5f', padding: '12px 0' }}>
 <div style={{
-maxWidth: 960, margin: '0 auto', padding: '0 16px',
+maxWidth: 1200, margin: '0 auto', padding: '0 16px',
 display: 'flex', alignItems: 'center'
 }}>
 <span style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>HYUNDAI</span>
@@ -77,7 +77,7 @@ display: 'flex', alignItems: 'center'
 </div>
 
 {/* 메인 */}
-<div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 16px' }}>
+<div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 16px' }}>
 {/* ✅ onUploadSuccess로 자동 리페치 */}
 <Header
 uploadedAt={uploadedAt}
