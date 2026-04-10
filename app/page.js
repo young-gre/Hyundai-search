@@ -85,7 +85,7 @@ setAuthError('서버 오류가 발생했습니다.')
 
 const filtered = useMemo(() => {
 return allData.filter(d => {
-if (filters.car && d.car !== filters.car) return false
+if (filters.car && d.carNameAdj !== filters.car) return false
 if (filters.engine && d.engine !== filters.engine) return false
 if (filters.trim && d.trim !== filters.trim) return false
 if (filters.ext && d.extColor !== filters.ext) return false

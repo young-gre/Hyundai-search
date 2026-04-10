@@ -25,8 +25,8 @@ export default function SearchFilter({ data, filters, setFilters, onReset }) {
   })
 
   // 계단식: 차종 → 엔진
-  const carList    = [...new Set(data.map(d => d.car).filter(Boolean))].sort()
-  const byCar      = filters.car ? data.filter(d => d.car === filters.car) : data
+  const carList    = [...new Set(data.map(d => d.carNameAdj).filter(Boolean))].sort()
+  const byCar      = filters.car ? data.filter(d => d.carNameAdj === filters.car) : data
   const engineList = [...new Set(byCar.map(d => d.engine).filter(Boolean))].sort()
   const byEngine   = filters.engine ? byCar.filter(d => d.engine === filters.engine) : byCar
 

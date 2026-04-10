@@ -35,10 +35,10 @@ const data = json
 const r = {}
 Object.keys(row).forEach(k => { r[k.trim()] = row[k] })
 
-const car = r['차종']
+const car = r['차량명_ADJ]
 
-if (!car) return false
-if (!/^[A-Z]{2}$/.test(String(car).trim())) return false
+if (!carNameAdj) return false
+if (!/^[A-Z]{2}/.test(String(carNameAdj).trim())) return false
 
 return true
 })
@@ -60,6 +60,7 @@ center: r['출고센터'] ?? '',
 totalPrice: r['판매조건 계(특조 금액 제외)'] ?? '',
 status: r['차량상태'] ?? '',
 carName: r['차량명'] ?? '',
+carNameAdj: r['차량명_ADJ'] ?? '',
 extColor: r['외장컬러'] ?? '',
 intColor: r['내장컬러'] ?? '',
 engine: r['엔진'] ?? '',
