@@ -35,7 +35,7 @@ const data = json
 const r = {}
 Object.keys(row).forEach(k => { r[k.trim()] = row[k] })
 
-const car = r['차량명_ADJ]
+const car = r['차량명_ADJ']
 
 if (!carNameAdj) return false
 if (!/^[A-Z]{2}/.test(String(carNameAdj).trim())) return false
