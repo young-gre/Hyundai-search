@@ -37,7 +37,7 @@ __html: `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-532395015');
+gtag('config', 'G-G9C781J4PL');
 `
 }} />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
